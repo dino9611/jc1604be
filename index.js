@@ -2,6 +2,8 @@ const http = require("http");
 const Mymodules = require("./modules");
 const { addString, data, users } = Mymodules;
 const fs = require("fs");
+const url = require("url");
+
 // ! function return promise
 const tampilkan = (path) => {
   return new Promise((resolve, reject) => {
@@ -17,7 +19,10 @@ const tampilkan = (path) => {
 
 const server = http.createServer(async (req, res) => {
   //   console.log(req.url);
-  if (req.url === "/") {
+  const urlparse = url.parse(req.url);
+  //   console.log(req.url);
+  //   console.log(urlparse);
+  if (req.url === "/" && req.method === "GET") {
     res.writeHead(200, { "Content-type": "text/html" });
     // with promise async await
     try {
@@ -49,7 +54,14 @@ const server = http.createServer(async (req, res) => {
 
     //   res.end(datas.replace("{{name}}", data.nama));
     // });
+  } else if (req.url === "/users" && req.method === "POST") {
+    req.on("data", (datas) => {
+      console.log(JSON.parse(datas));
+      res.writeHead(200, { "Content-type": "application/json" });
+      res.end(JSON.stringify(users));
+    });
   } else {
+    console.log(req.params);
     res.writeHead(200, { "Content-type": "application/json" });
     res.end(JSON.stringify(users));
   }
