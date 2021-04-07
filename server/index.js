@@ -105,10 +105,10 @@ const server = http.createServer(async (req, res) => {
       const data = JSON.parse(body);
       var id = urlparse.pathname.split("/")[2];
       if (id) {
-        var idx = usersData.findIndex((val) => val.id === id);
+        var idx = usersData.findIndex((val) => val.id == id);
         if (data.username && data.password) {
           data.id = id;
-          usersData.splice(idx - 1, 1, data);
+          usersData.splice(idx, 1, data);
           res.writeHead(200, { "Content-type": "application/json" });
           res.end(JSON.stringify(usersData));
         } else {
@@ -123,12 +123,12 @@ const server = http.createServer(async (req, res) => {
   } else if (urlparse.pathname.includes("/users") && req.method === "DELETE") {
     var id = urlparse.pathname.split("/")[2];
     if (id) {
-      var idx = usersData.findIndex((val) => val.id === id);
+      var idx = usersData.findIndex((val) => val.id == id);
       if (idx < 0) {
         res.writeHead(400, { "Content-type": "application/json" });
         res.end(JSON.stringify({ message: "id not found" }));
       } else {
-        usersData.splice(idx - 1, 1);
+        usersData.splice(idx, 1);
         res.writeHead(200, { "Content-type": "application/json" });
         res.end(JSON.stringify(usersData));
       }
