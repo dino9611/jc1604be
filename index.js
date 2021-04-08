@@ -170,7 +170,6 @@ app.get("/products", (req, res) => {
     Object.keys(req.query).length === 0 &&
     req.query.constructor === Object;
   if (!checkquery) {
-    console.log(req.query);
     let { hargamax, hargamin, page, limit } = req.query;
 
     let filterdata = dataProduct.filter((val) => {
@@ -194,9 +193,9 @@ app.get("/products", (req, res) => {
     if (!page) {
       page = 1;
     }
-    const pagefor = (page - 1) * limit;
+    const indexinit = (page - 1) * limit;
     let newarr = [];
-    for (let i = pagefor; i < limit * page; i++) {
+    for (let i = indexinit; i < limit * page; i++) {
       if (filterdata[i]) {
         newarr.push(filterdata[i]);
       }
