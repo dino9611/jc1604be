@@ -29,3 +29,12 @@ select * from payment;
 -- hitung berpa pembayaran yang lebih dari 7 dolar
 -- menggabungkan dua column firstname dan lastname
 
+
+
+use belsql;
+select * from products;
+
+
+
+
+

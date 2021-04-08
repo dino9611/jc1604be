@@ -164,6 +164,49 @@ const dataProduct = [
   },
 ];
 
+app.get("/products", (req, res) => {
+  const checkquery =
+    req.query &&
+    Object.keys(req.query).length === 0 &&
+    req.query.constructor === Object;
+  if (!checkquery) {
+    console.log(req.query);
+    let { hargamax, hargamin, page, limit } = req.query;
+
+    let filterdata = dataProduct.filter((val) => {
+      let param1, param2;
+      if (!hargamax) {
+        param1 = true;
+      } else {
+        param1 = val.harga <= hargamax;
+      }
+      if (!hargamin) {
+        param2 = true;
+      } else {
+        param2 = val.harga >= hargamin;
+      }
+      return param1 && param2;
+    });
+
+    if (!limit) {
+      limit = 3;
+    }
+    if (!page) {
+      page = 1;
+    }
+    const pagefor = (page - 1) * limit;
+    let newarr = [];
+    for (let i = pagefor; i < limit * page; i++) {
+      if (filterdata[i]) {
+        newarr.push(filterdata[i]);
+      }
+    }
+    res.send(newarr);
+  } else {
+    res.send(dataProduct);
+  }
+});
+
 app.all("*", (req, res) => {
   res.status(404).send("resource not found");
 });
