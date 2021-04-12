@@ -148,11 +148,42 @@ where f.film_id =1
 group by fa.film_id  ;
 
 -- ambil data film apa saja yang dimainkan penelope guiness
---  tampilkan film yang paling laris
  -- tampilkan data film genrenya animation 
  -- hitung berapa jumlah film berdasarkan category urutkan dari yang terkecil sampai terbesar
 -- urutkan actor yang paling banyak membintangi film dari yang terbesar sampai yang terkecil
--- urutkan customer yang paling banyak belanja terus berapa total dia ngabisin duitnya, 5 teratas ,tampilkan nama , total belanja
+
+
+--  tampilkan film yang paling laris
+select i.film_id,sum(amount) as jumlah_pendapatan, f.title from payment p 
+join rental r on p.rental_id=r.rental_id
+join inventory i on r.inventory_id=i.inventory_id
+join film f on i.film_id=f.film_id
+group by i.film_id
+order by jumlah_pendapatan desc
+limit 1
+;
 -- cabang mana yang paling banyak menghasilkan duit , berapa duitnya
+select st.store_id,s.staff_id,a.address,
+sum(amount) as penjualan,
+concat(s.first_name,' ',s.last_name) as full_name 
+from payment p 
+join staff s on p.staff_id=s.staff_id 
+join store st on s.store_id= st.store_id
+join address a on st.address_id = a.address_id
+group by s.store_id
+order by penjualan desc
+limit 1
+;
+-- urutkan customer yang paling banyak belanja terus berapa total dia ngabisin duitnya, 5 teratas ,tampilkan nama , total belanja
+select p.customer_id,
+concat(c.first_name, ' ', c.last_name) as full_name,
+count(*) as count_belanja,
+sum(amount) as total_belanja 
+from payment p 
+join customer c on p.customer_id = c.customer_id
+group by customer_id
+order by count_belanja desc , total_belanja desc
+limit 5;
+
 
 
