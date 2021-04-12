@@ -116,7 +116,7 @@ join transactions t on td.idtransaction= t.id where t.status= 'onCart';
 select * from transactions_details 
 where  idtransaction in (
 	select id  from transactions where status = 'onCart'
-)  ;
+) ;
 
 select * 
 from transactions_details 
@@ -148,9 +148,32 @@ where f.film_id =1
 group by fa.film_id  ;
 
 -- ambil data film apa saja yang dimainkan penelope guiness
+select fa.film_id,f.title from film_actor fa 
+join film f on fa.film_id = f.film_id
+where actor_id=(
+	select actor_id 
+		from actor 
+		where first_name = 'penelope' and last_name="guiness");
  -- tampilkan data film genrenya animation 
+ select f.title from film_category fc  
+ join film f on f.film_id = fc.film_id
+	where category_id = 
+		(select category_id from category where name='Animation');
  -- hitung berapa jumlah film berdasarkan category urutkan dari yang terkecil sampai terbesar
+ select count(*) as jumlah_filmperCategory,c.name 
+ from film_category fc 
+ join category c 
+ on fc.category_id = c.category_id
+ group by c.category_id 
+ order by jumlah_filmperCategory;
 -- urutkan actor yang paling banyak membintangi film dari yang terbesar sampai yang terkecil
+select count(*) as jumlah_film,
+concat(a.first_name,' ',a.last_name) as full_name
+from film_actor fa 
+join actor a on fa.actor_id = a.actor_id
+group by fa.actor_id 
+order by jumlah_film desc
+;
 
 
 --  tampilkan film yang paling laris
@@ -184,6 +207,10 @@ join customer c on p.customer_id = c.customer_id
 group by customer_id
 order by count_belanja desc , total_belanja desc
 limit 5;
+
+
+
+
 
 select * from mysql.user;
 
