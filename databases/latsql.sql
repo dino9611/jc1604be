@@ -185,5 +185,7 @@ group by customer_id
 order by count_belanja desc , total_belanja desc
 limit 5;
 
+select * from mysql.user;
 
+-- ALTER USER 'dino9611'@'%' IDENTIFIED WITH mysql_native_password BY 'yourpassword';
 

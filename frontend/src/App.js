@@ -7,11 +7,13 @@ function App() {
   const [addData, setaddData] = useState({
     username: "",
     password: "",
+    kota: "",
   });
   const [editData, seteditData] = useState({
     username: "",
     password: "",
     id: -1,
+    kota: "",
   });
 
   useEffect(() => {
@@ -47,7 +49,15 @@ function App() {
                 onChange={OnEditInputChange}
               />
             </td>
-
+            <td>
+              <input
+                type="text"
+                name="kota"
+                value={editData.kota}
+                className="form-control"
+                onChange={OnEditInputChange}
+              />
+            </td>
             <td>
               <button className="btn btn-danger mr-2" onClick={onEditYesClick}>
                 Yes
@@ -73,6 +83,7 @@ function App() {
           <td>{index + 1}</td>
           <td>{val.password}</td>
           <td>{val.username}</td>
+          <td>{val.kota}</td>
           <td>
             <button
               onClick={() => onDeleteClick(val.id)}
@@ -99,6 +110,7 @@ function App() {
     let data = {
       username: editData.username,
       password: editData.password,
+      kota: editData.kota,
     };
     axios
       .put(`http://localhost:5000/users/${id}`, data)
@@ -139,6 +151,7 @@ function App() {
 
   const onAddClick = () => {
     console.log(addData);
+
     // karena strukturenya sudah sama maka nggka perlu buat object baru lagi
     axios
       .post("http://localhost:5000/users", addData)
@@ -163,6 +176,7 @@ function App() {
             <th>No.</th>
             <th>password</th>
             <th>Nama</th>
+            <th>kota</th>
             <th>Action</th>
           </thead>
           <tbody>{renderData()}</tbody>
@@ -181,6 +195,14 @@ function App() {
           type="password"
           name="password"
           value={addData.password}
+          onChange={OnInputChange}
+        />
+        <input
+          className="form-control my-2"
+          placeholder="kota"
+          type="text"
+          name="kota"
+          value={addData.kota}
           onChange={OnInputChange}
         />
         <button onClick={onAddClick} className="btn btn-primary">
