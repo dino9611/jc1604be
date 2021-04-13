@@ -30,11 +30,12 @@ app.get("/", async (req, res) => {
 });
 
 //? get/Read
-
-app.get("/users", (req, res) => {
+const util = require("util");
+const dba = util.promisify(mysqldb.query).bind(mysqldb);
+app.get("/users", async (req, res) => {
   const { username, password } = req.query;
   let sql;
-  console.log(username);
+  // console.log(username);
   let escape = [];
   if (username && password) {
     // ! escape untuk input yang tidak dipercaya
@@ -48,15 +49,23 @@ app.get("/users", (req, res) => {
     //get semua user
     sql = `select * from users`;
   }
-  mysqldb.query(sql, escape, (err, result) => {
-    if (err) {
-      return res.status(500).send(err);
-    }
-
-    console.log(result);
-
+  try {
+    const result = await dba(sql, escape);
+    console.log(result, "coba");
     return res.send(result);
-  });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send(error);
+  }
+  // mysqldb.query(sql, escape, (err, result) => {
+  //   if (err) {
+  //     return res.status(500).send(err);
+  //   }
+
+  //   console.log(result);
+
+  //   return res.send(result);
+  // });
 });
 
 //? post/create
