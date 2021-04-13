@@ -1,5 +1,6 @@
 const { mysqldb } = require("./../connections");
-
+const util = require("util");
+const dba = util.promisify(mysqldb.query).bind(mysqldb);
 module.exports = {
   getUsers: (req, res) => {
     const { username, password } = req.query;
@@ -75,5 +76,30 @@ module.exports = {
         return res.send(result1);
       });
     });
+  },
+
+  gantipassword: async (req, res) => {
+    try {
+      const { passlama, passbaru } = req.body;
+      const { id } = req.params;
+      const datausers = await dba("select * from users where id = ?", [id]); //hasilnya array
+      if (datausers.length) {
+        if (datausers[0].password === passlama) {
+          const data = {
+            password: passbaru,
+          };
+          // console.log(data, "91");
+          await dba(`update users set ? where id = ?`, [data, id]);
+          const allUsers = await dba("select * from users where id");
+          return res.status(200).send(allUsers);
+        } else {
+          return res.status(500).send({ message: "password lama salah" });
+        }
+      } else {
+        return res.status(500).send({ message: "id not found" });
+      }
+    } catch (error) {
+      return res.status(500).send(error);
+    }
   },
 };

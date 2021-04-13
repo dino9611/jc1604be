@@ -32,9 +32,6 @@ const { usersRoutes, mongoRoutes } = require("./src/route");
 app.use("/users", usersRoutes);
 app.use("/mongo", mongoRoutes);
 
-// const util = require("util");
-// const dba = util.promisify(mysqldb.query).bind(mysqldb);
-
 app.all("*", (req, res) => {
   res.status(404).send("resource not found");
 });
