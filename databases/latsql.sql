@@ -216,3 +216,33 @@ select * from mysql.user;
 
 -- ALTER USER 'dino9611'@'%' IDENTIFIED WITH mysql_native_password BY 'yourpassword';
 
+
+-- gunain classicmodels
+use classicmodels;
+
+-- cari pegawai yang ngelapor ke vp sales
+
+select * from employees where reportsTo=
+(select employeeNumber from employees where jobtitle = 'vP sales');
+-- berapa jumlah uang yang hilang karena order di cancel
+
+select sum(od.priceEach * od.quantityOrdered) as TotalperEach from 
+orderdetails od join orders o on od.orderNumber = o.orderNumber
+ where status='cancelled' 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
