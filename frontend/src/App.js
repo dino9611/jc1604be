@@ -208,6 +208,23 @@ function App() {
         <button onClick={onAddClick} className="btn btn-primary">
           add
         </button>
+        <button
+          onClick={() => {
+            axios
+              .get("http://localhost:4000/prod/down")
+              .then((res) => {
+                console.log(res);
+              })
+              .catch((err) => {
+                console.log(err);
+              });
+          }}
+        >
+          coba
+        </button>
+        <a download href={"http://localhost:4000/prod/down"}>
+          sss
+        </a>
       </div>
     </div>
   );
