@@ -27,10 +27,17 @@ app.get("/", async (req, res) => {
   }
 });
 
-const { usersRoutes, mongoRoutes } = require("./src/route");
+const {
+  usersRoutes,
+  mongoRoutes,
+  mongooseRoutes,
+  hashRoutes,
+} = require("./src/route");
 
 app.use("/users", usersRoutes);
 app.use("/mongo", mongoRoutes);
+app.use("/mongoose", mongooseRoutes);
+app.use("/hashrouter", hashRoutes);
 
 app.all("*", (req, res) => {
   res.status(404).send("resource not found");
