@@ -27,6 +27,12 @@ app.get("/", async (req, res) => {
   }
 });
 
+app.get('/coba',(req,res)=>{
+  res.set('coba','tesaja')
+  res.status(200).send({coba:'ddd'})
+})
+
+
 const {
   usersRoutes,
   mongoRoutes,
