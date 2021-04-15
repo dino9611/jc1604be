@@ -3,17 +3,17 @@ const uri =
 const mongoose = require("mongoose");
 const products = require("./../models/productsModels");
 
-mongoose.connect(
-  uri,
-  { useNewUrlParser: true, useUnifiedTopology: true },
-  (err) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.log("connect mongoose");
-    }
-  }
-);
+// mongoose.connect(
+//   uri,
+//   { useNewUrlParser: true, useUnifiedTopology: true },
+//   (err) => {
+//     if (err) {
+//       console.log(err);
+//     } else {
+//       console.log("connect mongoose");
+//     }
+//   }
+// );
 
 module.exports = {
   initData: (req, res) => {

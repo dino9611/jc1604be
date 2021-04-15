@@ -27,20 +27,21 @@ app.get("/", async (req, res) => {
   }
 });
 
-app.get('/coba',(req,res)=>{
-  res.set('coba','tesaja')
-  res.status(200).send({coba:'ddd'})
-})
-
+app.get("/coba", (req, res) => {
+  res.set("coba", "tesaja"); //header request
+  res.status(200).send({ coba: "ddd" });
+});
 
 const {
   usersRoutes,
   mongoRoutes,
   mongooseRoutes,
   hashRoutes,
+  AuthRoutes,
 } = require("./src/route");
 
 app.use("/users", usersRoutes);
+app.use("/auth", AuthRoutes);
 app.use("/mongo", mongoRoutes);
 app.use("/mongoose", mongooseRoutes);
 app.use("/hashrouter", hashRoutes);

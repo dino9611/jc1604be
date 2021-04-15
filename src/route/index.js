@@ -7,4 +7,5 @@ module.exports = {
   mongoRoutes,
   mongooseRoutes,
   hashRoutes,
+  AuthRoutes: require("./AuthRouter"),
 };

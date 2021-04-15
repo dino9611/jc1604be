@@ -8,4 +8,5 @@ module.exports = {
   mongoController,
   mongooseController,
   encryptController,
+  AuthController: require("./AuthController"),
 };

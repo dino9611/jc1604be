@@ -7,13 +7,13 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
 });
 
-client
-  .connect()
-  .then(() => {
-    console.log("berhasil connect");
-  })
-  .catch((err) => {
-    console.log(err);
-  });
+// client
+//   .connect()
+//   .then(() => {
+//     console.log("berhasil connect");
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });
 
 module.exports = client;
