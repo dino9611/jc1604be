@@ -5,6 +5,8 @@ const PORT = 5000;
 const bodyParser = require("body-parser");
 const { Logger, tampilkan } = require("./src/lib");
 const cors = require("cors");
+const bearerToken = require("express-bearer-token");
+app.use(bearerToken());
 require("dotenv").config();
 //? req --> middleware -->
 app.use(cors());

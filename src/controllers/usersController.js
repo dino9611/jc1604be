@@ -3,6 +3,7 @@ const util = require("util");
 const dba = util.promisify(mysqldb.query).bind(mysqldb);
 module.exports = {
   getUsers: (req, res) => {
+    // console.log(req.user, "hasil dari token");
     const { username, password } = req.query;
     let sql;
     // console.log(username);
@@ -25,7 +26,7 @@ module.exports = {
         return res.status(500).send(err);
       }
 
-      console.log(result);
+      // console.log(result);
 
       return res.send(result);
     });

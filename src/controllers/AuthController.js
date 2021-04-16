@@ -1,12 +1,101 @@
-const Crypto = require("crypto");
 const { mysqldb } = require("./../connections");
-const jwt = require("jsonwebtoken");
-const hashpassword = (password) => {
-  var katakunci = process.env.HASH_KEY;
-  return Crypto.createHmac("sha256", katakunci).update(password).digest("hex");
-};
+const { createTransport } = require("nodemailer");
+const hashpassword = require("./../helpers/hashingpass");
+const {
+  createAccessToken,
+  createEmailVerifiedToken,
+} = require("./../helpers/createToken");
+const fs = require("fs");
+const path = require("path");
+const handlebars = require("handlebars");
+let transporter = createTransport({
+  service: "gmail",
+  auth: {
+    user: "dinotestes12@gmail.com",
+    pass: "ngmudtdpjoaunnec",
+  },
+  tls: {
+    rejectUnauthorized: false,
+  },
+});
 
 module.exports = {
+  sendEmail: (req, res) => {
+    let filepath = path.resolve(__dirname, "../content/email_template.html");
+    // let filepath1 = __dirname + "../content/conthemail.html";
+    const htmlrender = fs.readFileSync(filepath, "utf-8");
+    const template = handlebars.compile(htmlrender);
+    const htmltoemail = template({ username: "dino", link: "www.google.com" });
+    // console.log(filepath);
+    // console.log(filepath1, "tanpa resolve");
+    // console.log(htmltoemail);
+    transporter
+      .sendMail({
+        from: "raja bajak laut <dinotestes12@gmail.com>",
+        to: "dinopwdk@gmail.com",
+        subject: "Hai BGST konfirm",
+        html: htmltoemail,
+      })
+      .then((res1) => {
+        console.log(res1);
+        return res.send("berhasil");
+      })
+      .catch((err) => {
+        return res.status(500).send(err);
+      });
+  },
+  verifiedEmailwithoutToken: (req, res) => {
+    const { id } = req.params;
+    let dataUpdate = {
+      isverified: 1,
+    };
+    let sql = `update users set ? where id = ?`;
+    mysqldb.query(sql, [dataUpdate, id], (err, result) => {
+      if (err) return res.status(500).send(err);
+      sql = `select id,username,email,isverified,role from users where id = ? `;
+      mysqldb.query(sql, [id], (err, datauser) => {
+        if (err) return res.status(500).send({ message: err });
+        return res.send(datauser[0]);
+      });
+    });
+  },
+  verifiedEmailwithToken: (req, res) => {
+    const { id } = req.user;
+    let dataUpdate = {
+      isverified: 1,
+    };
+    let sql = `update users set ? where id = ?`;
+    mysqldb.query(sql, [dataUpdate, id], (err, result) => {
+      if (err) return res.status(500).send(err);
+      sql = `select id,username,email,isverified,role from users where id = ? `;
+      mysqldb.query(sql, [id], (err, datauser) => {
+        if (err) return res.status(500).send({ message: err });
+        return res.send(datauser[0]);
+      });
+    });
+  },
+  sendEmailVerification: (req, res) => {
+    const { id, email, username } = req.body;
+    const datatoken = {
+      id: id,
+      username: username,
+    };
+    const tokenverified = createEmailVerifiedToken(datatoken);
+    transporter
+      .sendMail({
+        from: "raja bajak laut <dinotestes12@gmail.com>",
+        to: email,
+        subject: "Hai konfirm",
+        html: `<h1>hai ${username}</h1> <a href='http://localhost:3000/verified/${tokenverified}'>link verifikasi<a/> `,
+      })
+      .then((res1) => {
+        console.log(res1);
+        return res.status(200).send({ message: "email berhasil dikirim" });
+      })
+      .catch((err) => {
+        return res.status(500).send(err);
+      });
+  },
   Register: (req, res) => {
     const { username, password, email } = req.body;
     if (!username || !password || !email) {
@@ -18,8 +107,8 @@ module.exports = {
       email,
     };
     // cek data user apakah data username atau pass sudah dipakai di db
-    let sql = `select * from users where username = ? or email = ?`;
-    mysqldb.query(sql, [username, email], (err, result0) => {
+    let sql = `select * from users where username = ? `;
+    mysqldb.query(sql, [username], (err, result0) => {
       if (err) return res.status(500).send({ message: err });
       if (result0.length) {
         return res
@@ -41,11 +130,24 @@ module.exports = {
             id: datauser[0].id,
             username: datauser[0].username,
           };
-          const key = "saitama";
-          const token = jwt.sign(datatoken, key, { expiresIn: "2h" });
-          return res
-            .status(200)
-            .send({ ...datauser[0], cart: [], token: token });
+          const token = createAccessToken(datatoken);
+          const tokenverified = createEmailVerifiedToken(datatoken);
+          transporter
+            .sendMail({
+              from: "raja bajak laut <dinotestes12@gmail.com>",
+              to: datauser[0].email,
+              subject: "Hai konfirm",
+              html: `<h1>hai ${datauser[0].username}</h1> <a href='http://localhost:3000/verified/${tokenverified}'>link verifikasi<a/> `,
+            })
+            .then((res1) => {
+              console.log(res1);
+              return res
+                .status(200)
+                .send({ ...datauser[0], cart: [], token: token });
+            })
+            .catch((err) => {
+              return res.status(500).send(err);
+            });
         });
       });
     });
@@ -70,8 +172,8 @@ module.exports = {
             id: datauser[0].id,
             username: datauser[0].username,
           };
-          const key = "saitama";
-          const token = jwt.sign(datatoken, key, { expiresIn: "2h" });
+          const token = createAccessToken(datatoken);
+
           return res
             .status(200)
             .send({ ...datauser[0], cart: [], token: token });
