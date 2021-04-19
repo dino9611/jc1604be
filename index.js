@@ -2,7 +2,7 @@
 const express = require("express");
 const app = express();
 const PORT = 5000;
-const bodyParser = require("body-parser");
+// const bodyParser = require("body-parser");
 const { Logger, tampilkan } = require("./src/lib");
 const cors = require("cors");
 const bearerToken = require("express-bearer-token");
@@ -14,9 +14,11 @@ app.use(cors());
 app.use(Logger);
 //!  boleh body parser || boleh express
 //? parse form data berguna untuk upload file /
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false }));
 //? parsing data dari json ke js untuk buat req.body ada juga buat parsing pada asaat axios/fetch di front end
-app.use(bodyParser.json());
+app.use(express.json());
+//? menyediakan file statis
+app.use(express.static("public"));
 
 app.get("/", async (req, res) => {
   try {
@@ -40,9 +42,11 @@ const {
   mongooseRoutes,
   hashRoutes,
   AuthRoutes,
+  ProductRoutes,
 } = require("./src/route");
 
 app.use("/users", usersRoutes);
+app.use("/products", ProductRoutes);
 app.use("/auth", AuthRoutes);
 app.use("/mongo", mongoRoutes);
 app.use("/mongoose", mongooseRoutes);

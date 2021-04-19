@@ -9,4 +9,5 @@ module.exports = {
   mongooseController,
   encryptController,
   AuthController: require("./AuthController"),
+  ProductController: require("./productController"),
 };
