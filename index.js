@@ -43,7 +43,7 @@ app.get("/", async (req, res) => {
 });
 
 app.get("/coba", (req, res) => {
-  res.set("coba", "tesaja"); //header request
+  res.set("cobasss", "tesaja"); //header request
   res.status(200).send({ coba: "ddd" });
 });
 
