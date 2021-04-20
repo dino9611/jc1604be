@@ -8,6 +8,7 @@ import ProtectedRoutes from "./components/protectedRoutes";
 import Verified from "./pages/verified";
 import Register from "./pages/register";
 import Products from "./pages/products";
+import Socket from "./pages/socket";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <ProtectedRoutes path="/register" exact component={Register} />
       <Route path="/verified/:token" component={Verified} />
       <Route path="/products" component={Products} />
+      <Route path="/socket" component={Socket} />
     </Switch>
   );
 }

@@ -9,4 +9,5 @@ module.exports = {
   hashRoutes,
   AuthRoutes: require("./AuthRouter"),
   ProductRoutes: require("./ProductRouter"),
+  SocketRoutes: require("./SocketRoute"),
 };

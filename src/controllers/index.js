@@ -10,4 +10,5 @@ module.exports = {
   encryptController,
   AuthController: require("./AuthController"),
   ProductController: require("./productController"),
+  SocketController: require("./socketController"),
 };

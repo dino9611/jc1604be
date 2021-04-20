@@ -1,7 +1,9 @@
 "use strict";
 const express = require("express");
 const app = express();
-const PORT = 5000;
+const http = require("http");
+const socketIo = require("socket.io");
+const PORT = process.env.PORT || 5000;
 // const bodyParser = require("body-parser");
 const { Logger, tampilkan } = require("./src/lib");
 const cors = require("cors");
@@ -19,6 +21,15 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 //? menyediakan file statis
 app.use(express.static("public"));
+
+const server = http.createServer(app);
+const io = socketIo(server);
+var userCount = 0;
+
+let MSG = [];
+
+app.io = io; // buat mendistribusikan function io kedalam controler
+app.msg = MSG;
 
 app.get("/", async (req, res) => {
   try {
@@ -43,6 +54,7 @@ const {
   hashRoutes,
   AuthRoutes,
   ProductRoutes,
+  SocketRoutes,
 } = require("./src/route");
 
 app.use("/users", usersRoutes);
@@ -51,9 +63,22 @@ app.use("/auth", AuthRoutes);
 app.use("/mongo", mongoRoutes);
 app.use("/mongoose", mongooseRoutes);
 app.use("/hashrouter", hashRoutes);
+app.use("/socket", SocketRoutes);
 
 app.all("*", (req, res) => {
   res.status(404).send("resource not found");
 });
 
-app.listen(PORT, () => console.log("listen in PORT " + PORT));
+io.on("connection", (socket) => {
+  userCount++;
+  console.log("bebas");
+  io.emit("user connected", userCount);
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
+    userCount--;
+    io.emit("user connected", userCount);
+  });
+});
+
+server.listen(PORT, () => console.log("listen in PORT " + PORT));
